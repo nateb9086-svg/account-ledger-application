@@ -56,10 +56,52 @@ public class Prompt {
         }
 
      }
+
+    private static double promptAmount(Scanner scanner) {
+        while (true) {
+            System.out.print("Amount (e.g. 1500.00): ");
+            String input = scanner.nextLine().trim();
+            try {
+                double amount = Double.parseDouble(input);
+                if (amount <= 0) {
+                    System.out.println(" Amount must be greater than zero.");
+
+
+                }
+                else {
+                    return amount;
+                }
+            }
+            catch (NumberFormatException e) {
+                System.out.println(" Invalid amount. Enter a number (e.g. 1500.00).");
+            }
+
+
+
+        }
+    }
     private static void addTransaction(Scanner scanner, String type) {
+        System.out.println("\n---" + type + " ---");
 
         String date = promtDate(scanner);
         String time = promptTime(scanner);
+
+        System.out.print("Description: ");
+        String description = scanner.nextLine().trim();
+
+        String vendorLabel = type.equals("Deposit") ? "Vendor (sender/source): " : "Vendor (payee/recipient): ";
+        System.out.print(vendorLabel);
+        String vendor = scanner.nextLine().trim();
+        double amount = promptAmount(scanner);
+
+        if (type.equals("Payment")) {
+            amount = -amount;
+        }
+
+
+
+
+
     }
 
 
