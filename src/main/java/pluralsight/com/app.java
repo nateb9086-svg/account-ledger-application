@@ -28,6 +28,7 @@ public class app {
 
             switch (choice) {
                 case "D":
+
                     break;
                 case "P":
                     break;
@@ -40,9 +41,16 @@ public class app {
                 default:
                     System.out.println("Invalid option. Please c hoose D, P, L, or X.");
             }
+
+
+
+
+
+            }
+
         }
     }
-}
+
 
 
 
