@@ -8,13 +8,13 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.ArrayList;
 
+
+
 public class app {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
-
-
 
 
         while (running) {
@@ -35,6 +35,7 @@ public class app {
                     addTransaction(scanner, "Payment");
                     break;
                 case "L":
+                    displayLedger();
                     break;
                 case "X":
                     System.out.println("Goodbye!;");
@@ -44,9 +45,10 @@ public class app {
                     System.out.println("Invalid option. Please choose D, P, L, or X.");
             }
 
-            }
-
         }
+
+    }
+
     private static final String file = "transactions.csv";
     private static final String divider = "|";
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -63,7 +65,7 @@ public class app {
         }
     }
 
-    private static String promptDate(Scanner scanner){
+    private static String promptDate(Scanner scanner) {
         while (true) {
             System.out.print("Date (YYYY-MM-DD) or Enter for today: ");
             String input = scanner.nextLine().trim();
@@ -71,8 +73,7 @@ public class app {
             try {
                 LocalDate.parse(input, dateFormat);
                 return input;
-            }
-            catch (DateTimeParseException e) {
+            } catch (DateTimeParseException e) {
                 System.out.println(" Invalid date. Use YYYY-MM-DD.");
 
             }
@@ -82,16 +83,15 @@ public class app {
     }
 
 
-    private static String promptTime(Scanner scanner){
+    private static String promptTime(Scanner scanner) {
         while (true) {
             System.out.print("Time (HH:MM:SS) or Enter for now: ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) return LocalTime.now().format(timeFormat);
             try {
-               LocalTime.parse(input, timeFormat );
-               return input;
-            }
-            catch (DateTimeParseException e) {
+                LocalTime.parse(input, timeFormat);
+                return input;
+            } catch (DateTimeParseException e) {
                 System.out.println(" Invalid time. Use HH:MM:SS.");
             }
         }
@@ -117,8 +117,8 @@ public class app {
         }
 
 
-
     }
+
     private static void addTransaction(Scanner scanner, String type) {
         System.out.println("\n---" + type + " ---");
         String date = promptDate(scanner);
@@ -146,7 +146,8 @@ public class app {
 
         System.out.printf("%n %s recorded: %s%n", type, row);
     }
-    private static List<String[]>readTransactions() {
+
+    private static List<String[]> readTransactions() {
         List<String[]> entries = new ArrayList<>();
         File file2 = new File(file);
 
@@ -159,21 +160,77 @@ public class app {
         try (BufferedReader bR = new BufferedReader(new FileReader(file2))) {
             String line;
             boolean firstLine = true;
-            while ((line = bR.readLine() ) != null) {
-                if (firstLine) { firstLine = false; continue; }
+            while ((line = bR.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
                 if (!line.trim().isEmpty()) {
                     entries.add(line.split("\\" + divider, -1));
                 }
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
 
         return entries;
     }
 
+    private static String truncate(String s, int max) {
+        return s.length() <= max ? s : s.substring(0, max - 1) + "…";
+    }
+
+
+    private static void displayLedger() {
+        List<String[]> entries = readTransactions();
+
+        if (entries.isEmpty()) {
+            System.out.println("\n No transaction found.");
+            return;
+        }
+
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+
+        double balance = 0;
+
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+
+            String date = fields[0];
+            String time = fields[1];
+            String description = fields[2];
+            String vendor = fields[3];
+            String amountStr = fields[4];
+            try {
+                double amount = Double.parseDouble(amountStr);
+                balance += amount;
+                String sign = amount >= 0 ? "+" : "";
+                System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                        date, time,
+                        truncate(description, 28),
+                        truncate(vendor, 23),
+                        sign + String.format("%.2f", amount));
+
+            }
+            catch (NumberFormatException e) {
+            }
+
+
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "BALANCE", (balance >= 0? "+" : "" ) +String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+
+
+
+
+    }
 }
+
+
 
 
 
