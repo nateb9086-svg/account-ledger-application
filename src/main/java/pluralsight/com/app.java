@@ -5,9 +5,8 @@ import java.util.Scanner;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.ArrayList;
 
 public class app {
     public static void main(String[] args) {
@@ -33,6 +32,7 @@ public class app {
                     addTransaction(scanner, "Deposit");
                     break;
                 case "P":
+                    addTransaction(scanner, "Payment");
                     break;
                 case "L":
                     break;
@@ -41,20 +41,16 @@ public class app {
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid option. Please c hoose D, P, L, or X.");
+                    System.out.println("Invalid option. Please choose D, P, L, or X.");
             }
-
-
-
-
 
             }
 
         }
     private static final String file = "transactions.csv";
     private static final String divider = "|";
-    private static final DateTimeFormatter dateFormt = DateTimeFormatter.ofPattern("yyyy-MM-day");
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm-ss");
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     Scanner scanner = new Scanner(System.in);
     boolean running = true;
@@ -71,9 +67,9 @@ public class app {
         while (true) {
             System.out.print("Date (YYYY-MM-DD) or Enter for today: ");
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return LocalDate.now().format(dateFormt);
+            if (input.isEmpty()) return LocalDate.now().format(dateFormat);
             try {
-                LocalDate.parse(input, dateFormt);
+                LocalDate.parse(input, dateFormat);
                 return input;
             }
             catch (DateTimeParseException e) {
@@ -92,7 +88,8 @@ public class app {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) return LocalTime.now().format(timeFormat);
             try {
-                LocalTime.parse(input, timeFormat );
+               LocalTime.parse(input, timeFormat );
+               return input;
             }
             catch (DateTimeParseException e) {
                 System.out.println(" Invalid time. Use HH:MM:SS.");
@@ -148,6 +145,32 @@ public class app {
         appendToFile(row);
 
         System.out.printf("%n %s recorded: %s%n", type, row);
+    }
+    private static List<String[]>readTransactions() {
+        List<String[]> entries = new ArrayList<>();
+        File file2 = new File(file);
+
+        if (!file2.exists()) {
+            System.out.println("transactions.csv not found.");
+            return entries;
+
+        }
+
+        try (BufferedReader bR = new BufferedReader(new FileReader(file2))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = bR.readLine() ) != null) {
+                if (firstLine) { firstLine = false; continue; }
+                if (!line.trim().isEmpty()) {
+                    entries.add(line.split("\\" + divider, -1));
+                }
+            }
+        }
+        catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+
+        return entries;
     }
 
 }
