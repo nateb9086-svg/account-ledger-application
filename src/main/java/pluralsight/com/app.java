@@ -17,6 +17,7 @@ public class app {
         boolean running = true;
 
 
+
         while (running) {
 
             System.out.println("What action would you like?");
@@ -35,7 +36,37 @@ public class app {
                     addTransaction(scanner, "Payment");
                     break;
                 case "L":
-                    displayLedger();
+                    Boolean lRunning = true;
+                    while (lRunning) {
+                        System.out.println("Welcome to the Ledger screen.");
+                        System.out.println("What action would you like?");
+                        System.out.println(" [A] Display all Entries");
+                        System.out.println(" [D] Display Deposits");
+                        System.out.println(" [P] Display Payments");
+                        System.out.println(" [R] Display Reports");
+                        System.out.println(" [H] Home");
+
+                        String lChoice = scanner.nextLine().trim().toUpperCase();
+
+                        switch (lChoice) {
+                            case "A":
+
+                                displayLedger();
+                                break;
+                            case "D":
+                                break;
+                            case "P":
+                                break;
+                            case "R":
+
+                                break;
+                            case "H":
+                                lRunning = false;
+                                break;
+                            default:
+                                System.out.println("Invalid option. Please choose D, P, L, or X.");
+                        }
+                    }
                     break;
                 case "X":
                     System.out.println("Goodbye!;");
@@ -48,7 +79,6 @@ public class app {
         }
 
     }
-
     private static final String file = "transactions.csv";
     private static final String divider = "|";
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
