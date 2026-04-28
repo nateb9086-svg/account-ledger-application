@@ -11,9 +11,12 @@ import java.util.Scanner;
 
 public class Prompt {
     private static final String file = "transactions.csv";
-    private static final String Divider = "|";
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-day");
+    private static final String divider = "|";
+    private static final DateTimeFormatter dateFormt = DateTimeFormatter.ofPattern("yyyy-MM-day");
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm-ss");
+
+    Scanner scanner = new Scanner(System.in);
+    boolean running = true;
 
     private static void appendToFile(String row) {
         try (FileWriter fw = new FileWriter(file, true)) {
@@ -23,13 +26,13 @@ public class Prompt {
         }
     }
 
-    private static String promtDate(Scanner scanner){
+    private static String promptDate(Scanner scanner){
         while (true) {
             System.out.print("Date (YYYY-MM-DD) or Enter for today: ");
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return LocalDate.now().format(dateFormat);
+            if (input.isEmpty()) return LocalDate.now().format(dateFormt);
             try {
-                LocalDate.parse(input, dateFormat);
+                LocalDate.parse(input, dateFormt);
                 return input;
             }
             catch (DateTimeParseException e) {
@@ -83,7 +86,7 @@ public class Prompt {
     private static void addTransaction(Scanner scanner, String type) {
         System.out.println("\n---" + type + " ---");
 
-        String date = promtDate(scanner);
+        String date = promptDate(scanner);
         String time = promptTime(scanner);
 
         System.out.print("Description: ");
@@ -97,6 +100,17 @@ public class Prompt {
         if (type.equals("Payment")) {
             amount = -amount;
         }
+        String row = String.join(divider,
+                date,
+                time,
+                description,
+                vendor,
+                String.format("%.2f", amount));
+
+        appendToFile(row);
+
+        System.out.printf("%n %s recorded: %s%n", type, row);
+
 
 
 
