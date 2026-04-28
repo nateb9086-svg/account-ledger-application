@@ -258,6 +258,45 @@ public class app {
 
 
     }
+    private static void DisplayDeposits(){
+        List<String[]> entries = readTransactions();
+
+        List<String[]> deppsits = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                double amount = Double.parseDouble(fields[4]);
+                if (amount > 0) deposits.add(fields);
+            }
+            catch (NumberFormatException e) {}
+        }
+        if (deposits.isEmpty()) {
+            System.out.println("\n No deposits found");
+            return;
+        }
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double total = 0;
+        for (String[] fields ){
+            for (String[] fields : deposits) {
+                double amount = Double.parseDouble(fields[4]);
+                total += amount;
+                System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                        fields[0], fields[1],
+                        truncate(fields[2], 28),
+                        truncate(fields[3], 23),
+                        "+" + String.format("%.2f", amount));
+            }
+
+            System.out.println("----------------------------------------------------------------------------------------------");
+            System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", total));
+            System.out.println("----------------------------------------------------------------------------------------------");
+        }
+    }
+
+
 }
 
 
