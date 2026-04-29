@@ -77,8 +77,10 @@ public class app {
                                             filterMonthToDate();
                                             break;
                                         case "2":
+                                            filterPreviousMonth();
                                             break;
                                         case "3":
+
                                             break;
                                         case "4":
                                             break;
@@ -89,7 +91,6 @@ public class app {
                                             break;
                                         default:
                                             System.out.println("Invalid option. Please choose 1, 2, 3, 4, 5,or 0.");
-
 
                                     }
 
@@ -250,7 +251,7 @@ public class app {
         List<String[]> entries = readTransactions();
 
         if (entries.isEmpty()) {
-            System.out.println("\n No transaction found.");
+            System.out.println("No transaction found.");
             return;
         }
 
@@ -304,7 +305,7 @@ public class app {
             }
         }
         if (deposits.isEmpty()) {
-            System.out.println("\n No deposits found");
+            System.out.println("No deposits found");
             return;
         }
         System.out.println("---------------------------------------------------------------------------------------------");
@@ -418,11 +419,65 @@ public class app {
         System.out.println();
     }
 
+    private static void filterPreviousMonth() {
+        List<String[]> entries = readTransactions();
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfPrevMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastOfPrevMonth = firstOfPrevMonth.withDayOfMonth(firstOfPrevMonth.lengthOfMonth());
 
+        List<String[]> filtered = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                LocalDate date = LocalDate.parse(fields[0], dateFormat);
+                // Must fall between the first and last day of the previous month (inclusive)
+                if (!date.isBefore(firstOfPrevMonth) && !date.isAfter(lastOfPrevMonth)) {
+                    filtered.add(fields);
+                }
+            }
+            catch (DateTimeParseException e) {
+                // skip malformed rows
+            }
+        }
+        if (filtered.isEmpty()) {
+            System.out.println("No transactions found for the previous month.");
+            System.out.println();
+            return;
+        }
 
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf(" Previous Month: %s through %s%n",
+                firstOfPrevMonth.format(dateFormat), lastOfPrevMonth.format(dateFormat));
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double balance = 0;
+
+        for (String[] fields : filtered) {
+            double amount = Double.parseDouble(fields[4]);
+            balance += amount;
+            String sign = amount >= 0 ? "+" : "";
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    sign + String.format("%.2f", amount));
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "NET TOTAL",
+                (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println();
 
 
     }
+
+}
+
+
+
+
 
 
 
