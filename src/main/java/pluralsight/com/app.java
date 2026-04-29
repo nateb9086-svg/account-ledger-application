@@ -81,7 +81,6 @@ public class app {
                                             break;
                                         case "3":
                                             filterYearToDate();
-
                                             break;
                                         case "4":
                                             filterPreviousYear();
@@ -436,8 +435,7 @@ public class app {
                 if (!date.isBefore(firstOfPrevMonth) && !date.isAfter(lastOfPrevMonth)) {
                     filtered.add(fields);
                 }
-            }
-            catch (DateTimeParseException e) {
+            } catch (DateTimeParseException e) {
                 // skip malformed rows
             }
         }
@@ -489,8 +487,7 @@ public class app {
                 if (!date.isBefore(firstOfYear) && !date.isAfter(today)) {
                     filtered.add(fields);
                 }
-            }
-            catch (DateTimeParseException e) {
+            } catch (DateTimeParseException e) {
                 // skip malformed rows
             }
         }
@@ -535,12 +532,66 @@ public class app {
         System.out.println();
 
     }
+
     private static void filterPreviousYear() {
         List<String[]> entries = readTransactions();
         LocalDate today = LocalDate.now();
         LocalDate firstOfPrevYear = today.minusYears(1).withDayOfYear(1);
         LocalDate lastOfPrevYear = firstOfPrevYear.withDayOfYear(firstOfPrevYear.lengthOfYear());
+
+        List<String[]> filtered = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                LocalDate date = LocalDate.parse(fields[0], dateFormat);
+                // Must fall between Jan 1 and Dec 31 of the previous year (inclusive)
+                if (!date.isBefore(firstOfPrevYear) && !date.isAfter(lastOfPrevYear)) {
+                    filtered.add(fields);
+                }
+            } catch (DateTimeParseException e) {
+                // skip malformed rows
+            }
+        }
+        if (filtered.isEmpty()) {
+            System.out.println("\n No transactions found for the previous year.");
+            return;
+        }
+
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf(" Previous Year: %s through %s%n",
+                firstOfPrevYear.format(dateFormat), lastOfPrevYear.format(dateFormat));
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double balance = 0;
+        double totalDeposits = 0;
+        double totalPayments = 0;
+
+        for (String[] fields : filtered) {
+            double amount = Double.parseDouble(fields[4]);
+            balance += amount;
+            if (amount >= 0) totalDeposits += amount;
+            else totalPayments += amount;
+
+            String sign = amount >= 0 ? "+" : "";
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    sign + String.format("%.2f", amount));
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", totalDeposits));
+        System.out.printf(" %-79s %12s%n", "TOTAL PAYMENTS", String.format("%.2f", totalPayments));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "NET TOTAL",
+                (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println();
+    }
 }
+
 
 
 
