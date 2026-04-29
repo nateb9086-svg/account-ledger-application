@@ -57,28 +57,61 @@ public class app {
                                 DisplayDeposits();
                                 break;
                             case "P":
+                                DisplayPayments();
                                 break;
                             case "R":
+                                Boolean rRunning = true;
+                                while (rRunning) {
+                                    System.out.println("Welcome to the Reports screen.");
+                                    System.out.println("What Search options would you like?");
+                                    System.out.println(" [1] Filter for Months To Date");
+                                    System.out.println(" [2] Filter for Previous Month");
+                                    System.out.println(" [3] Filter for Year To Date");
+                                    System.out.println(" [4] Previous Year");
+                                    System.out.println(" [5] Search by Vendor");
+                                    System.out.println(" [0] Back");
+
+                                    String rChoice = scanner.nextLine().trim().toUpperCase();
+
+                                    switch (rChoice) {
+                                        case "1":
+                                            break;
+                                        case "2":
+                                            break;
+                                        case "3":
+                                            break;
+                                        case "4":
+                                            break;
+                                        case "5":
+                                            break;
+                                        case "0":
+                                            rRunning = false;
+                                            break;
+                                        default:
+                                            System.out.println("Invalid option. Please choose 1, 2, 3, 4, 5,or 0.");
+
+
+                                    }
+
+                                }
 
                                 break;
                             case "H":
                                 lRunning = false;
                                 break;
                             default:
-                                System.out.println("Invalid option. Please choose D, P, L, or X.");
+                                System.out.println("Invalid option. Please choose A, D, P, R or H.");
                         }
                     }
                     break;
                 case "X":
-                    System.out.println("Goodbye!;");
+                    System.out.println("Goodbye! ");
                     running = false;
                     break;
                 default:
                     System.out.println("Invalid option. Please choose D, P, L, or X.");
             }
-
         }
-
     }
     private static final String file = "transactions.csv";
     private static final String divider = "|";
@@ -294,6 +327,46 @@ public class app {
             System.out.println("----------------------------------------------------------------------------------------------");
             System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", total));
             System.out.println("-----------------------------------------------------------------------------------------------");
+
+    }
+
+    private static void DisplayPayments(){
+        List<String[]> entries = readTransactions();
+
+        List<String[]> payments = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                double amount = Double.parseDouble(fields[4]);
+                if (amount < 0) payments.add(fields);
+            }
+            catch (NumberFormatException e) {}
+        }
+        if (payments.isEmpty()) {
+            System.out.println("\n No deposits found");
+            return;
+        }
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+
+        double total = 0;
+
+        for (String[] fields : payments) {
+            double amount = Double.parseDouble(fields[4]);
+            total += amount;
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    "+" + String.format("%.2f", amount));
+        }
+
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "PAYMENT TOTAL", String.format("%.2f", total));
+        System.out.println("-----------------------------------------------------------------------------------------------");
+        System.out.println("");
 
     }
 
