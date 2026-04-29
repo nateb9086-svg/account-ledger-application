@@ -80,6 +80,7 @@ public class app {
                                             filterPreviousMonth();
                                             break;
                                         case "3":
+                                            filterYearToDate();
 
                                             break;
                                         case "4":
@@ -473,6 +474,66 @@ public class app {
 
     }
 
+    private static void filterYearToDate() {
+        List<String[]> entries = readTransactions();
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfYear = today.withDayOfYear(1);
+
+        List<String[]> filtered = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                LocalDate date = LocalDate.parse(fields[0], dateFormat);
+                // Must fall between Jan 1 of current year and today (inclusive)
+                if (!date.isBefore(firstOfYear) && !date.isAfter(today)) {
+                    filtered.add(fields);
+                }
+            }
+            catch (DateTimeParseException e) {
+                // skip malformed rows
+            }
+        }
+
+        if (filtered.isEmpty()) {
+            System.out.println("\n No transactions found for year-to-date.");
+            return;
+        }
+
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf(" Year-to-Date: %s through %s%n",
+                firstOfYear.format(dateFormat), today.format(dateFormat));
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double balance = 0;
+        double totalDeposits = 0;
+        double totalPayments = 0;
+
+        for (String[] fields : filtered) {
+            double amount = Double.parseDouble(fields[4]);
+            balance += amount;
+            if (amount >= 0) totalDeposits += amount;
+            else totalPayments += amount;
+
+            String sign = amount >= 0 ? "+" : "";
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    sign + String.format("%.2f", amount));
+        }
+
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", totalDeposits));
+        System.out.printf(" %-79s %12s%n", "TOTAL PAYMENTS", String.format("%.2f", totalPayments));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "NET TOTAL",
+                (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println();
+
+    }
 }
 
 
