@@ -86,6 +86,7 @@ public class app {
                                             filterPreviousYear();
                                             break;
                                         case "5":
+                                            searchByVendor(scanner);
 
                                             break;
                                         case "0":
@@ -591,7 +592,65 @@ public class app {
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.println();
     }
-}
+
+    private static void searchByVendor(Scanner scanner) {
+        System.out.print("\n Enter vendor name to search: ");
+        String searchTerm = scanner.nextLine().trim().toLowerCase();
+        if (searchTerm.isEmpty()) {
+            System.out.println(" No vendor name entered.");
+            return;
+        }
+        List<String[]> entries = readTransactions();
+        List<String[]> filtered = new ArrayList<>();
+
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            // Case-insensitive partial match so "amazon" finds "Amazon Prime"
+            if (fields[3].trim().toLowerCase().contains(searchTerm)) {
+                filtered.add(fields);
+            }
+        }
+        if (filtered.isEmpty()) {
+            System.out.printf("%n No transactions found for vendor: \"%s\"%n", searchTerm);
+            return;
+        }
+
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf(" Vendor Search: \"%s\" — %d result(s) found%n", searchTerm, filtered.size());
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double balance = 0;
+        double totalDeposits = 0;
+        double totalPayments = 0;
+
+        for (String[] fields : filtered) {
+            double amount = Double.parseDouble(fields[4]);
+            balance += amount;
+            if (amount >= 0) totalDeposits += amount;
+            else totalPayments += amount;
+
+            String sign = amount >= 0 ? "+" : "";
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    sign + String.format("%.2f", amount));
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", totalDeposits));
+        System.out.printf(" %-79s %12s%n", "TOTAL PAYMENTS", String.format("%.2f", totalPayments));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "NET TOTAL",
+                (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println();
+    }
+
+
+    }
+
 
 
 
