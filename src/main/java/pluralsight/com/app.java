@@ -17,7 +17,6 @@ public class app {
         boolean running = true;
 
 
-
         while (running) {
 
             System.out.println("What action would you like?");
@@ -64,7 +63,7 @@ public class app {
                                 while (rRunning) {
                                     System.out.println("Welcome to the Reports screen.");
                                     System.out.println("What Search options would you like?");
-                                    System.out.println(" [1] Filter for Months To Date");
+                                    System.out.println(" [1] Filter for Month To Date");
                                     System.out.println(" [2] Filter for Previous Month");
                                     System.out.println(" [3] Filter for Year To Date");
                                     System.out.println(" [4] Previous Year");
@@ -75,6 +74,7 @@ public class app {
 
                                     switch (rChoice) {
                                         case "1":
+                                            filterMonthToDate();
                                             break;
                                         case "2":
                                             break;
@@ -113,6 +113,7 @@ public class app {
             }
         }
     }
+
     private static final String file = "transactions.csv";
     private static final String divider = "|";
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -278,21 +279,19 @@ public class app {
                         truncate(vendor, 23),
                         sign + String.format("%.2f", amount));
 
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
             }
 
 
         }
         System.out.println("----------------------------------------------------------------------------------------------");
-        System.out.printf(" %-79s %12s%n", "BALANCE", (balance >= 0? "+" : "" ) +String.format("%.2f", balance));
+        System.out.printf(" %-79s %12s%n", "BALANCE", (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
         System.out.println("----------------------------------------------------------------------------------------------");
 
 
-
-
     }
-    private static void DisplayDeposits(){
+
+    private static void DisplayDeposits() {
         List<String[]> entries = readTransactions();
 
         List<String[]> deposits = new ArrayList<>();
@@ -301,8 +300,8 @@ public class app {
             try {
                 double amount = Double.parseDouble(fields[4]);
                 if (amount > 0) deposits.add(fields);
+            } catch (NumberFormatException e) {
             }
-            catch (NumberFormatException e) {}
         }
         if (deposits.isEmpty()) {
             System.out.println("\n No deposits found");
@@ -322,15 +321,15 @@ public class app {
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
                     "+" + String.format("%.2f", amount));
-            }
+        }
 
-            System.out.println("----------------------------------------------------------------------------------------------");
-            System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", total));
-            System.out.println("-----------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "TOTAL DEPOSITS", "+" + String.format("%.2f", total));
+        System.out.println("-----------------------------------------------------------------------------------------------");
 
     }
 
-    private static void DisplayPayments(){
+    private static void DisplayPayments() {
         List<String[]> entries = readTransactions();
 
         List<String[]> payments = new ArrayList<>();
@@ -339,8 +338,8 @@ public class app {
             try {
                 double amount = Double.parseDouble(fields[4]);
                 if (amount < 0) payments.add(fields);
+            } catch (NumberFormatException e) {
             }
-            catch (NumberFormatException e) {}
         }
         if (payments.isEmpty()) {
             System.out.println("\n No deposits found");
@@ -370,8 +369,61 @@ public class app {
 
     }
 
+    private static void filterMonthToDate() {
+        List<String[]> entries = readTransactions();
+        LocalDate today = LocalDate.now();
 
-}
+        List<String[]> filtered = new ArrayList<>();
+        for (String[] fields : entries) {
+            if (fields.length < 5) continue;
+            try {
+                LocalDate date = LocalDate.parse(fields[0], dateFormat);
+                // Same year AND same month AND not in the future
+                if (date.getYear() == today.getYear()
+                        && date.getMonthValue() == today.getMonthValue()
+                        && !date.isAfter(today)) {
+                    filtered.add(fields);
+                }
+            } catch (DateTimeParseException e) {
+                // skip malformed rows
+            }
+        }
+        if (filtered.isEmpty()) {
+            System.out.println("\n No transactions found for month-to-date.");
+            return;
+        }
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf(" Month-to-Date: %s through %s%n",
+                today.withDayOfMonth(1).format(dateFormat), today.format(dateFormat));
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.printf("%-12s %-10s %30s %25s %12s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("---------------------------------------------------------------------------------------------");
+
+        double balance = 0;
+
+        for (String[] fields : filtered) {
+            double amount = Double.parseDouble(fields[4]);
+            balance += amount;
+            String sign = amount >= 0 ? "+" : "";
+            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                    fields[0], fields[1],
+                    truncate(fields[2], 28),
+                    truncate(fields[3], 23),
+                    sign + String.format("%.2f", amount));
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.printf(" %-79s %12s%n", "NET TOTAL",
+                (balance >= 0 ? "+" : "") + String.format("%.2f", balance));
+        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println();
+    }
+
+
+
+
+
+    }
+
 
 
 
