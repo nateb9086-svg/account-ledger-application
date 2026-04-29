@@ -84,6 +84,7 @@ public class app {
 
                                             break;
                                         case "4":
+                                            filterPreviousYear();
                                             break;
                                         case "5":
                                             break;
@@ -534,6 +535,11 @@ public class app {
         System.out.println();
 
     }
+    private static void filterPreviousYear() {
+        List<String[]> entries = readTransactions();
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfPrevYear = today.minusYears(1).withDayOfYear(1);
+        LocalDate lastOfPrevYear = firstOfPrevYear.withDayOfYear(firstOfPrevYear.lengthOfYear());
 }
 
 
