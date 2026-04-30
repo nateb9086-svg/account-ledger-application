@@ -176,7 +176,6 @@ public class app {
                 if (amount <= 0) {
                     System.out.println(" Amount must be greater than zero.");
 
-
                 } else {
                     return amount;
                 }
@@ -291,7 +290,7 @@ public class app {
                 double amount = Double.parseDouble(amountStr);
                 balance += amount;
                 String sign = amount >= 0 ? "+" : "";
-                System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+                System.out.printf(" %-12s %10s %30s %25s %12s%n",
                         date, time,
                         truncate(description, 28),
                         truncate(vendor, 23),
@@ -334,7 +333,7 @@ public class app {
         for (String[] fields : deposits) {
             double amount = Double.parseDouble(fields[4]);
             total += amount;
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
@@ -373,11 +372,11 @@ public class app {
         for (String[] fields : payments) {
             double amount = Double.parseDouble(fields[4]);
             total += amount;
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
-                    "+" + String.format("%.2f", amount));
+                    String.format("%.2f", amount));
         }
 
         System.out.println("----------------------------------------------------------------------------------------------");
@@ -422,7 +421,7 @@ public class app {
             double amount = Double.parseDouble(fields[4]);
             balance += amount;
             String sign = amount >= 0 ? "+" : "";
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
@@ -472,7 +471,7 @@ public class app {
             double amount = Double.parseDouble(fields[4]);
             balance += amount;
             String sign = amount >= 0 ? "+" : "";
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
@@ -528,7 +527,7 @@ public class app {
             else totalPayments += amount;
 
             String sign = amount >= 0 ? "+" : "";
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
@@ -588,7 +587,7 @@ public class app {
             else totalPayments += amount;
 
             String sign = amount >= 0 ? "+" : "";
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
@@ -643,7 +642,7 @@ public class app {
             else totalPayments += amount;
 
             String sign = amount >= 0 ? "+" : "";
-            System.out.printf(" %-12s %10s %-30s %-25s %12s%n",
+            System.out.printf(" %-12s %-10s %30s %25s %12s%n",
                     fields[0], fields[1],
                     truncate(fields[2], 28),
                     truncate(fields[3], 23),
