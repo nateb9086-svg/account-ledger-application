@@ -241,6 +241,20 @@ public class app {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
+        entries.sort((a, b) -> {
+            try {
+                LocalDate dateA = LocalDate.parse(a[0], dateFormat);
+                LocalDate dateB = LocalDate.parse(b[0], dateFormat);
+                int dateCmp = dateB.compareTo(dateA);
+                if (dateCmp != 0) return dateCmp;
+
+                LocalTime timeA = LocalTime.parse(a[1], timeFormat);
+                LocalTime timeB = LocalTime.parse(b[1], timeFormat);
+                return timeB.compareTo(timeA);
+            } catch (DateTimeParseException e) {
+                return 0;
+            }
+        });
 
         return entries;
     }
@@ -376,20 +390,19 @@ public class app {
     private static void filterMonthToDate() {
         List<String[]> entries = readTransactions();
         LocalDate today = LocalDate.now();
-
         List<String[]> filtered = new ArrayList<>();
         for (String[] fields : entries) {
             if (fields.length < 5) continue;
             try {
                 LocalDate date = LocalDate.parse(fields[0], dateFormat);
-                // Same year AND same month AND not in the future
+
                 if (date.getYear() == today.getYear()
                         && date.getMonthValue() == today.getMonthValue()
                         && !date.isAfter(today)) {
                     filtered.add(fields);
                 }
-            } catch (DateTimeParseException e) {
-                // skip malformed rows
+            }
+            catch (DateTimeParseException e) {
             }
         }
         if (filtered.isEmpty()) {
@@ -433,12 +446,11 @@ public class app {
             if (fields.length < 5) continue;
             try {
                 LocalDate date = LocalDate.parse(fields[0], dateFormat);
-                // Must fall between the first and last day of the previous month (inclusive)
+
                 if (!date.isBefore(firstOfPrevMonth) && !date.isAfter(lastOfPrevMonth)) {
                     filtered.add(fields);
                 }
             } catch (DateTimeParseException e) {
-                // skip malformed rows
             }
         }
         if (filtered.isEmpty()) {
@@ -485,12 +497,11 @@ public class app {
             if (fields.length < 5) continue;
             try {
                 LocalDate date = LocalDate.parse(fields[0], dateFormat);
-                // Must fall between Jan 1 of current year and today (inclusive)
+
                 if (!date.isBefore(firstOfYear) && !date.isAfter(today)) {
                     filtered.add(fields);
                 }
             } catch (DateTimeParseException e) {
-                // skip malformed rows
             }
         }
 
@@ -546,12 +557,12 @@ public class app {
             if (fields.length < 5) continue;
             try {
                 LocalDate date = LocalDate.parse(fields[0], dateFormat);
-                // Must fall between Jan 1 and Dec 31 of the previous year (inclusive)
+
                 if (!date.isBefore(firstOfPrevYear) && !date.isAfter(lastOfPrevYear)) {
                     filtered.add(fields);
                 }
             } catch (DateTimeParseException e) {
-                // skip malformed rows
+
             }
         }
         if (filtered.isEmpty()) {
@@ -605,7 +616,7 @@ public class app {
 
         for (String[] fields : entries) {
             if (fields.length < 5) continue;
-            // Case-insensitive partial match so "amazon" finds "Amazon Prime"
+
             if (fields[3].trim().toLowerCase().contains(searchTerm)) {
                 filtered.add(fields);
             }
@@ -647,46 +658,4 @@ public class app {
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.println();
     }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
