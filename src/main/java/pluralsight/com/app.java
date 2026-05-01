@@ -66,7 +66,7 @@ public class app {
                                     System.out.println(" [1] Filter for This Month");
                                     System.out.println(" [2] Filter for Previous Month");
                                     System.out.println(" [3] Filter for This Year");
-                                    System.out.println(" [4] Previous Year");
+                                    System.out.println(" [4] Filter for Previous Year");
                                     System.out.println(" [5] Search by Vendor");
                                     System.out.println(" [0] Back");
 
