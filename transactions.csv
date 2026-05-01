@@ -7,7 +7,7 @@ date|time|description|vendor|amount
 2026-01-07|11:05:47|Pharmacy|CVS Pharmacy|-23.18
 2026-02-08|19:30:00|Dinner out|Olive Garden|64.20
 2023-04-09|10:00:00|Home supplies|Target|-112.67
-2026-01-10|16:45:33|Electric bill|Con Edison|98.50
+2026-05-01|16:45:33|Electric bill|Con Edison|98.50
 2026-04-11|13:25:14|Bookstore|Barnes & Noble|31.99
 2026-03-12|09:55:00|Gym membership|Planet Fitness|24.99
 2026-04-14|18:10:08|Takeout delivery|DoorDash|38.45
@@ -20,3 +20,7 @@ date|time|description|vendor|amount
 2026-04-30|10:35:00|Coffee|Starbucks|3.00
 2026-04-30|03:51:00|Supplies|Staples|24.00
 2026-04-30|15:55:00|Date|The Eagle|-57.00
+2026-05-01|19:45:00|New Records|The Exchange|30.00
+2026-04-31|19:53:00|Fast Food|Shake Shack|5.00
+2026-04-30|20:00:46|Food Truck|Street Fries|-16.00
+2026-04-30|20:01:54|Snacks|Family Dollar|30.00

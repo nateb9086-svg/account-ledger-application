@@ -63,9 +63,9 @@ public class app {
                                 while (rRunning) {
                                     System.out.println("Welcome to the Reports screen.");
                                     System.out.println("What Search options would you like?");
-                                    System.out.println(" [1] Filter for Month To Date");
+                                    System.out.println(" [1] Filter for This Month");
                                     System.out.println(" [2] Filter for Previous Month");
-                                    System.out.println(" [3] Filter for Year To Date");
+                                    System.out.println(" [3] Filter for This Year");
                                     System.out.println(" [4] Previous Year");
                                     System.out.println(" [5] Search by Vendor");
                                     System.out.println(" [0] Back");
@@ -268,6 +268,7 @@ public class app {
 
         if (entries.isEmpty()) {
             System.out.println("No transaction found.");
+            System.out.println();
             return;
         }
 
@@ -359,7 +360,7 @@ public class app {
             }
         }
         if (payments.isEmpty()) {
-            System.out.println("\n No deposits found");
+            System.out.println("\n No payments found");
             return;
         }
         System.out.println("---------------------------------------------------------------------------------------------");
@@ -405,7 +406,8 @@ public class app {
             }
         }
         if (filtered.isEmpty()) {
-            System.out.println("\n No transactions found for month-to-date.");
+            System.out.println(" No transactions found for this month.");
+            System.out.println();
             return;
         }
         System.out.println("---------------------------------------------------------------------------------------------");
@@ -505,7 +507,8 @@ public class app {
         }
 
         if (filtered.isEmpty()) {
-            System.out.println("\n No transactions found for year-to-date.");
+            System.out.println("No transactions found for this year.");
+            System.out.println();
             return;
         }
 
@@ -565,7 +568,8 @@ public class app {
             }
         }
         if (filtered.isEmpty()) {
-            System.out.println("\n No transactions found for the previous year.");
+            System.out.println("No transactions found for the previous year.");
+            System.out.println();
             return;
         }
 
@@ -604,7 +608,7 @@ public class app {
     }
 
     private static void searchByVendor(Scanner scanner) {
-        System.out.print("\n Enter vendor name to search: ");
+        System.out.print("Enter vendor name to search: ");
         String searchTerm = scanner.nextLine().trim().toLowerCase();
         if (searchTerm.isEmpty()) {
             System.out.println(" No vendor name entered.");
@@ -622,6 +626,7 @@ public class app {
         }
         if (filtered.isEmpty()) {
             System.out.printf("%n No transactions found for vendor: \"%s\"%n", searchTerm);
+            System.out.println();
             return;
         }
 
