@@ -14,57 +14,25 @@ You will be prompted right at the beginning with 4 actions and a character adjac
 you're supposed to press on the keyboard and then ENTER(RETURN if you’re on a Mac). The usage of the 
 ENTER-key will apply to every action you submit.
 
- [D] Add Deposit
- 
- [P] Make Payment
- 
- [L] Display Ledger
- 
- [X] Exit(Aborts the app)
+ [D] Add Deposit, [P] Make Payment, [L] Display Ledger, [X] Exit(Aborts the app)
 
 
 When both adding a deposit and making payments you will be asked the same information. 
 
-Date(YYYY-MM-DD) 
-
-Time(HH:MM:SS) 
-
-Description(Purpose)
-
-Vendor(Company)
-
-Amount(How much you're depositing or paying)
+Date(YYYY-MM-DD), Time(HH:MM:SS), Description(Purpose), Vendor(Company), Amount(How much you're depositing or paying)
 
 
 The “Display Ledger” option will send the user to the Ledger Screen.
 
 
- [A] Display all Entries
- 
- [D] Display Deposits
-
- [P] Display Payments
- 
- [R] Display Reports
-
- [H] Home(Sends You to the Home Screen)
+ [A] Display all Entries, [D] Display Deposits, [P] Display Payments, [R] Display Reports, [H] Home(Sends You to the Home Screen)
 
 
 When entering the Display Reports screen it will give you filter options to find entries based 
 on a specific point in time.
 
 
- [1] Filter for This Month
-
- [2] Filter for Previous Month
- 
- [3] Filter for This Year
-
- [4] Filter for Previous Year
-
- [5] Search by Vendor
-
- [0] Back(Sends you to the Ledger Screen.
+ [1] Filter for This Month, [2] Filter for Previous Month, [3] Filter for This Year, [4] Filter for Previous Year, [5] Search by Vendor, [0] Back(Sends you to the Ledger Screen.
 
 
 Each filter option will provide the Net Total along with options 3, 4, and 5 providing the Total Deposits 
